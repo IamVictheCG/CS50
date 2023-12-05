@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "typeinfo": "c",
-        "numbers": "c"
-    }
+        "numbers": "c",
+        "string": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
