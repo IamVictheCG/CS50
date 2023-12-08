@@ -12,8 +12,7 @@ void draw(int n)
 {
     for (int i = 0; i < n; i++)
     {
-            // printf("@");
-
+        printf("@");
         for (int j = 3; j < i + 1; j++)
         {
             printf("%i", j);
