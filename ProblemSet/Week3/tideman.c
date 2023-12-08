@@ -44,7 +44,7 @@ int main(int argc, string argv[])
 
     // Populate array of candidates
     candidate_count = argc - 1;
-    printf("%i", candidate_count);
+    printf("%i\n", candidate_count); //print number candidates
     if (candidate_count > MAX)
     {
         printf("Maximum number of candidates is %i\n", MAX);
@@ -102,42 +102,112 @@ bool vote(int rank, string name, int ranks[])
 {
     for (int i = 0; i < candidate_count; i++)
     {
-        if (strcmp(name, candidates[i]) != 0)
+        if (!strcmp(name, candidates[i]))
         {
             ranks[rank] = i;
             return true;
         }
     }
-    
-    
     return false;
 }
 
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO
+    for (int i = 0; i < candidate_count; i++)
+    {
+        for (int j = i + 1; j < candidate_count; j++)
+        {
+            preferences[ranks[i]][ranks[j]]++;
+        }
+        
+    }
     return;
 }
 
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO
+    pair_count = 0;
+    for (int i = 0; i < candidate_count -1; i++)
+    {
+        for (int j = i + 1; j < candidate_count; j++)
+        {
+            if (preferences[i][j] > preferences[j][i])
+            {
+                pairs[pair_count].winner = i;
+                pairs[pair_count].loser = j;
+                pair_count++;
+            }
+
+            if (preferences[j][i] > preferences[i][j])
+            {
+                pairs[pair_count].winner = j;
+                pairs[pair_count].loser = i;
+                pair_count++;
+            }
+        }        
+    }
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
+    for (int i = 0; i < pair_count; i++)
+    {
+        int strength; 
+        int highest;
+        int next_strength;
+
+        strength = preferences[pairs[i].winner][pairs[i].loser] - preferences[pairs[i].loser][pairs[i].winner];
+        highest =i;
+        for (int j = i +  1; j < pair_count; j++)
+        {
+            next_strength = preferences[pairs[j].winner][pairs[j].loser] - preferences[pairs[j].loser][pairs[j].winner];
+            if (next_strength > strength)
+            {
+                highest = j;
+                strength = next_strength;
+            }
+        }
+        if (highest != i)
+        {
+            pair buffer = pairs[i];
+            pairs[i] = pairs[highest];
+            pairs[highest] = buffer;
+        }   
+    }
     return;
 }
 
+bool cycle(int winner, int loser) {
+    if (locked[loser][winner] == true)
+    {
+        return true;
+    }
+
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (locked[loser][i] && cycle(winner, i))
+        {
+            return true;
+        }
+        
+    }
+    return false;
+}
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
     // TODO
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (!cycle(pairs[i].winner, pairs[i].loser))
+        {
+            locked[pairs[i].winner][pairs[i].loser] = true;
+        }   
+    }
     return;
 }
 
@@ -145,6 +215,18 @@ void lock_pairs(void)
 void print_winner(void)
 {
     // TODO
+    int i;
+
+    for (i = 0; i < candidate_count; i++)
+    {
+        int x = 1;
+        for (int j = 0; j < candidate_count; j++)
+        {
+            if (locked[j][i] == true) x = 0;            
+        }
+        if (x == 1) break;
+    }
+    printf("%s\n", candidates[i]);
     return;
 }
 // Alice Bob Charlie
