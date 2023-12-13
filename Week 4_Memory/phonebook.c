@@ -1,12 +1,21 @@
+// Saves names and numbers to a CSV file
+
+#include <cs50.h>
 #include <stdio.h>
-#include "cs50.h"
 #include <string.h>
 
-int main(void) {
+int main(void)
+{
+    // Open CSV file
     FILE *file = fopen("phonebook.csv", "a");
 
-    string name = get_string("Name: ");
-    string number = get_string("Number: ");
-    fprintf(file, "%s,%s\n", name, number);
+    // Get name and number
+    char *name = get_string("Name: ");
+    char *number = get_string("Number: ");
+
+    // Print to file
+    fprintf(file, "Name: %s ... Number:%s\n", name, number);
+
+    // Close file
     fclose(file);
 }
